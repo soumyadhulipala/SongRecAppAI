@@ -1,394 +1,1155 @@
-{
- "cells": [
-  {
-   "cell_type": "code",
-   "execution_count": 1,
-   "id": "09cfa419-12a6-445d-9bc7-6ec372cae3c6",
-   "metadata": {},
-   "outputs": [
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "2026-04-28 16:57:29.679 \n",
-      "  \u001b[33m\u001b[1mWarning:\u001b[0m to view this Streamlit app on a browser, run it with the following\n",
-      "  command:\n",
-      "\n",
-      "    streamlit run /opt/anaconda3/lib/python3.11/site-packages/ipykernel_launcher.py [ARGUMENTS]\n",
-      "2026-04-28 16:57:29.680 No runtime found, using MemoryCacheStorageManager\n",
-      "2026-04-28 16:57:29.681 No runtime found, using MemoryCacheStorageManager\n"
-     ]
-    },
-    {
-     "data": {
-      "image/png": "iVBORw0KGgoAAAANSUhEUgAAAeEAAAH5CAYAAAC2z4b4AAAAOXRFWHRTb2Z0d2FyZQBNYXRwbG90bGliIHZlcnNpb24zLjguMCwgaHR0cHM6Ly9tYXRwbG90bGliLm9yZy81sbWrAAAACXBIWXMAAA9hAAAPYQGoP6dpAABB50lEQVR4nO3dd3xUVd4G8OeWyaSHFAglEEoghF4VIaCAouBKcWWxrAJWwLXuurZVQMXGuq+4+y42mrsWZF2aAuoK7xJQlCoqBBJKJJRAEkIqydx7z/tHYEwgIQkkOTP3Pt/Px49MZu7M795J5plz7jnnKkIIASIiImp0quwCiIiInIohTEREJAlDmIiISBKGMBERkSQMYSIiIkkYwkRERJIwhImIiCRhCBMREUnCECYiIpKEIUzkY2bMmAFFUaAoCtq2bSu7HADAwoULvTUpilLpvquuusr780mTJskp8By+WBNRVRjCdNFycnLw5z//Gddeey1atmyJoKAghIeHo1OnTrjqqqswY8YMfPfdd3DayqgVQ1RRFKiqCrfbjejoaHTp0gU33ngj3nnnHRQVFTV4LRXrWLhwYYO/XmNgwJKd6LILIP80b948PPzwwygsLKz089OnT6OgoABpaWn473//i5kzZ+LAgQM+06KTQQiBsrIy5ObmIjc3F7t378bSpUvx5JNPYsGCBbjhhhsqPX7EiBEIDQ0FAERERMgo+Tz9+/fH7NmzZZdRa1OnTsWvfvUrAEC3bt0kV0NUPYYw1dn//M//4NFHH/XeVhQFQ4cOxeWXX47w8HDk5ubi+++/R0pKCkpKSiRWemEFBQUICwtr8Nd56qmnEBERgRMnTiAlJQXffvstgPKehDFjxmDx4sUYP3689/EDBw7EwIEDG7yu2jh7jLp27YquXbvKLqfWJkyYILsEotoRRHWwe/duoeu6ACAAiJiYGPHNN99U+diioiLx9ttvixMnTpx337Zt28SkSZNEu3bthNvtFqGhoaJfv37itddeEyUlJec9/uzrARALFiwQq1evFoMHDxbBwcEiIiJCjBs3Thw8eLDSNuvWrau03d69e8Xzzz8vOnbsKFwul5g4caL3sYZhiIULF4rhw4eLmJgYoeu6aNq0qRg9erRYu3ZtnY7R9OnTK73ugQMHKt2/YsUKERgY6L0/LCys0jGquH18fHylbQ8ePCjuvfdekZCQIAIDA4Xb7RYtW7YUAwcOFI888ojYtWuXEEKIK6+8slIN5/5X8XnPPbYfffSR6N+/vwgODvY+bsGCBZUeV1HF15o4caJIT08X48ePF1FRUSI4OFgkJyeLr7766rzjdO7rXug5qzquVf139lhXtX1Fqamp4r777vMex+DgYJGYmCgeeOCB896vqp4vNTVV3HTTTSIyMlIEBgaKAQMGiHXr1p23HVFNGMJUJ1OmTKn0offJJ5/U+Tn++te/Ck3Tqv0g7d+/v8jLy6u0TcX7Bw4cWOV2HTp0qBTg54bwoEGDKt0+++FcVFQkhg4desEP91mzZtV6/2oKYSGEeO211yo95qWXXqpy+4phmZWVJZo2bXrBOufOnSuEuPgQPvcY1TWEr7jiChEVFXXe62madt7viqwQXrx4caUvQef+FxYWJj7//PNq6+nRo4cIDQ09b7uAgADx448/VvEbQVQ9dkdTnaxdu9b778jISIwbN65O22/cuBEPPvigd7BWcnIyrr76auTl5WHRokU4efIkNm/ejKlTp+KDDz6o8jm+/vprdOvWDWPGjEFKSgrWr18PANi3bx+WLl2KW265pdrX7tGjB66//npYluU93/rwww9j3bp1AAC3241bb70V7du3x/bt2/Hvf/8bAPD000+jX79+GDFiRJ32tzqTJ0/GH/7wB+9xWLt2LZ544okLbvPJJ5/gxIkTAMqP/eTJkxEdHY0jR44gNTUVKSkp3seePSf62GOPeX82YcIE9OvXD0D155o3btyI2NhYTJgwAVFRUThw4ECd9uubb75By5Yt8fjjj6OgoADz5s1DaWkpTNPE3Xffjauvvhrh4eF1es6zzp4rnzt3Lvbv3w8A6NevX6Wu56ioqAs+R1paGu644w6UlpYCAJo2bYqJEyfCMAzMnz8f+fn5KCgowPjx47F3717Exsae9xw7d+5ETEwMpkyZgqysLPzjH/8AAJSVleGNN97AW2+9dVH7Rw4l+1sA+Zfg4GDvN//LLrus0n0HDhyosmXx61//2vuYcePGeX9+7bXXCsuyvPetWbPGe5+iKOLQoUPe+yo+X3x8vCgsLBRCCFFWViaaNWvmve/RRx/1bnNuS3jw4MGitLS0Us05OTmVWuUffPBBpftvvvlm733XXHNNrY5RbVrCQohKdXfp0qXK7Su2WP/yl794f37fffed93yF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FxeHESNGYMKECfjiiy8AAKZp4q677kK7du0QFBSExMREzJkzp9L2kyZNwtixYzFz5kw0a9YM4eHhuO+++1BWViZjd4ionumyCyByiv3792PNmjVwuVwAAMuyEBcXh48//hgxMTH4+uuvce+996JFixb4zW9+493uq6++QmBgINatW4eDBw9i8uTJiImJwaxZs2TtChHVE0UIIWQXQWRHkyZNwj//+U8EBgbCNE2cPn0aAPCXv/wFjzzySJXb3H///cjKysK//vUv73OsXLkShw4dQnBwMADgzTffxGOPPYZTp05BVdmZReTP2BImakBDhw7F3LlzUVxcjHfffRd79+7FAw884L3/zTffxLvvvouMjAyUlJSgrKwMvXr1qvQcPXv29AYwAFxxxRUoLCzEoUOHEB8f31i7QkQNgF+jiRpQSEgIEhIS0KNHD7zxxhsoLS3FzJkzAQAff/wxHnnkEdx555344osvsGPHDkyePLnW53sVRWnI0omoEbAlTNSIpk+fjpEjR2Lq1KlISUnBwIEDK42W3rdv33nbfP/99ygpKUFQUBAAYNOmTQgNDUVcXFyj1U1EDYMtYaJGdNVVV6Fr16548cUXkZCQgC1btuDzzz/H3r178cwzz2Dz5s3nbVNWVoa77roLu3btwurVqzF9+nT87ne/4/lgIhtgS5iokT366KOYPHky9u7dix07dmDChAlQFAW33HILpk2bhtWrV1d6/PDhw9GxY0cMGTIEpaWluPnmmzFjxgw5xRNRveLoaCIfNmnSJOTl5WHZsmWySyGiBsD+LCIiIkkYwkRERJKwO5qIiEgStoSJiIgkYQgTERFJwhAmIiKShCFMREQkCUOYiIhIEoYwERGRJAxhIiIiSRjCREREkjCEiYiIJGEIExERScIQJiIikoQhTEREJAlDmIiISBKGMBERkSQMYSIiIkkYwkRERJIwhImIiCRhCBMREUnCECYiIpKEIUxERCQJQ5iIiEgShjAREZEkDGEiIiJJGMJERESSMISJiIgkYQgTERFJwhAmIiKShCFMREQkCUOYiIhIkv8HIEiCRDlMlZ4AAAAASUVORK5CYII=",
-      "text/plain": [
-       "<Figure size 600x600 with 1 Axes>"
-      ]
-     },
-     "metadata": {},
-     "output_type": "display_data"
-    }
-   ],
-   "source": [
-    "import streamlit as st\n",
-    "import pandas as pd\n",
-    "import numpy as np\n",
-    "import matplotlib.pyplot as plt\n",
-    "\n",
-    "from sklearn.preprocessing import StandardScaler, MinMaxScaler\n",
-    "from sklearn.metrics.pairwise import cosine_similarity\n",
-    "from sklearn.feature_extraction.text import TfidfVectorizer\n",
-    "\n",
-    "\n",
-    "st.set_page_config(\n",
-    "    page_title=\"AI Song Recommender\",\n",
-    "    layout=\"wide\"\n",
-    ")\n",
-    "\n",
-    "st.title(\"AI Song Recommendation System\")\n",
-    "\n",
-    "\n",
-    "@st.cache_data\n",
-    "def load_data():\n",
-    "    ULH = pd.read_csv(\"User_Listening_History.csv\")\n",
-    "    MI_info = pd.read_csv(\"Music_Info.csv\")\n",
-    "    return ULH, MI_info\n",
-    "\n",
-    "\n",
-    "ULH, MI_info = load_data()\n",
-    "\n",
-    "\n",
-    "@st.cache_resource\n",
-    "def build_model(MI_info, ULH):\n",
-    "    song_data = MI_info.copy()\n",
-    "\n",
-    "    audio_features = [\n",
-    "        \"danceability\", \"energy\", \"valence\", \"tempo\",\n",
-    "        \"acousticness\", \"instrumentalness\",\n",
-    "        \"liveness\", \"speechiness\", \"loudness\"\n",
-    "    ]\n",
-    "\n",
-    "    song_data = song_data.dropna(subset=audio_features)\n",
-    "    song_data = song_data.drop_duplicates(subset=[\"track_id\"])\n",
-    "    song_data = song_data.reset_index(drop=True)\n",
-    "\n",
-    "    song_data[\"tags\"] = song_data[\"tags\"].fillna(\"\")\n",
-    "    song_data[\"genre\"] = song_data[\"genre\"].fillna(\"\")\n",
-    "    song_data[\"artist\"] = song_data[\"artist\"].fillna(\"\")\n",
-    "    song_data[\"name\"] = song_data[\"name\"].fillna(\"\")\n",
-    "    song_data[\"spotify_preview_url\"] = song_data[\"spotify_preview_url\"].fillna(\"\")\n",
-    "\n",
-    "    scaler = StandardScaler()\n",
-    "    audio_scaled = scaler.fit_transform(song_data[audio_features])\n",
-    "\n",
-    "    song_data[\"text_features\"] = (\n",
-    "        song_data[\"tags\"] + \" \" +\n",
-    "        song_data[\"genre\"] + \" \" +\n",
-    "        song_data[\"artist\"]\n",
-    "    )\n",
-    "\n",
-    "    tfidf = TfidfVectorizer(stop_words=\"english\", max_features=5000)\n",
-    "    text_matrix = tfidf.fit_transform(song_data[\"text_features\"])\n",
-    "\n",
-    "    listening_data = ULH.merge(\n",
-    "        song_data[[\"track_id\"]],\n",
-    "        on=\"track_id\",\n",
-    "        how=\"inner\"\n",
-    "    )\n",
-    "\n",
-    "    song_popularity = (\n",
-    "        listening_data.groupby(\"track_id\")[\"playcount\"]\n",
-    "        .sum()\n",
-    "        .reset_index()\n",
-    "    )\n",
-    "\n",
-    "    song_data = song_data.merge(song_popularity, on=\"track_id\", how=\"left\")\n",
-    "    song_data[\"playcount\"] = song_data[\"playcount\"].fillna(0)\n",
-    "\n",
-    "    pop_scaler = MinMaxScaler()\n",
-    "    song_data[\"popularity_score\"] = pop_scaler.fit_transform(\n",
-    "        song_data[[\"playcount\"]]\n",
-    "    )\n",
-    "\n",
-    "    return song_data, audio_scaled, text_matrix\n",
-    "\n",
-    "\n",
-    "song_data, audio_scaled, text_matrix = build_model(MI_info, ULH)\n",
-    "\n",
-    "\n",
-    "def hybrid_recommend(song_name, limit=10, exclude_same_artist=True):\n",
-    "    matches = song_data[\n",
-    "        song_data[\"name\"].str.lower().str.contains(song_name.lower(), na=False)\n",
-    "    ]\n",
-    "\n",
-    "    if matches.empty:\n",
-    "        return pd.DataFrame()\n",
-    "\n",
-    "    idx = matches.index[0]\n",
-    "\n",
-    "    audio_scores = cosine_similarity(\n",
-    "        audio_scaled[idx].reshape(1, -1),\n",
-    "        audio_scaled\n",
-    "    )[0]\n",
-    "\n",
-    "    text_scores = cosine_similarity(\n",
-    "        text_matrix[idx],\n",
-    "        text_matrix\n",
-    "    )[0]\n",
-    "\n",
-    "    pop_scores = song_data[\"popularity_score\"].values\n",
-    "\n",
-    "    final_scores = (\n",
-    "        0.4 * audio_scores +\n",
-    "        0.5 * text_scores +\n",
-    "        0.1 * pop_scores\n",
-    "    )\n",
-    "\n",
-    "    final_scores[idx] = -1\n",
-    "\n",
-    "    results = song_data.copy()\n",
-    "    results[\"score\"] = final_scores\n",
-    "\n",
-    "    selected_artist = song_data.iloc[idx][\"artist\"]\n",
-    "\n",
-    "    if exclude_same_artist:\n",
-    "        results = results[results[\"artist\"] != selected_artist]\n",
-    "\n",
-    "    return results.sort_values(\"score\", ascending=False).head(limit)\n",
-    "\n",
-    "\n",
-    "def recommend_by_user(user_id, limit=10):\n",
-    "    history = ULH[ULH[\"user_id\"] == user_id]\n",
-    "\n",
-    "    if history.empty:\n",
-    "        return pd.DataFrame()\n",
-    "\n",
-    "    top_tracks = (\n",
-    "        history.sort_values(\"playcount\", ascending=False)\n",
-    "        .head(5)[\"track_id\"]\n",
-    "    )\n",
-    "\n",
-    "    all_recs = []\n",
-    "\n",
-    "    for track_id in top_tracks:\n",
-    "        song = song_data[song_data[\"track_id\"] == track_id]\n",
-    "\n",
-    "        if not song.empty:\n",
-    "            recs = hybrid_recommend(\n",
-    "                song.iloc[0][\"name\"],\n",
-    "                limit=limit,\n",
-    "                exclude_same_artist=True\n",
-    "            )\n",
-    "\n",
-    "            if not recs.empty:\n",
-    "                all_recs.append(recs)\n",
-    "\n",
-    "    if not all_recs:\n",
-    "        return pd.DataFrame()\n",
-    "\n",
-    "    final = pd.concat(all_recs)\n",
-    "\n",
-    "    listened_tracks = history[\"track_id\"].tolist()\n",
-    "    final = final[~final[\"track_id\"].isin(listened_tracks)]\n",
-    "\n",
-    "    final = final.drop_duplicates(subset=[\"track_id\"])\n",
-    "    final = final.sort_values(\"score\", ascending=False)\n",
-    "\n",
-    "    return final.head(limit)\n",
-    "\n",
-    "\n",
-    "def recommend_by_genre(genre, limit=10):\n",
-    "    genre = genre.strip().lower()\n",
-    "\n",
-    "    result = song_data[\n",
-    "        song_data[\"genre\"].str.lower().eq(genre)\n",
-    "    ].copy()\n",
-    "\n",
-    "    if result.empty:\n",
-    "        result = song_data[\n",
-    "            song_data[\"tags\"].str.lower().str.contains(\n",
-    "                rf\"\\b{genre}\\b\",\n",
-    "                na=False,\n",
-    "                regex=True\n",
-    "            )\n",
-    "        ].copy()\n",
-    "\n",
-    "    if result.empty:\n",
-    "        return pd.DataFrame()\n",
-    "\n",
-    "    result = result.sort_values(\n",
-    "        [\"popularity_score\", \"playcount\"],\n",
-    "        ascending=False\n",
-    "    ).head(limit)\n",
-    "\n",
-    "    result[\"score\"] = result[\"popularity_score\"]\n",
-    "\n",
-    "    return result\n",
-    "\n",
-    "\n",
-    "def clean_display_table(df):\n",
-    "    if df.empty:\n",
-    "        return df\n",
-    "\n",
-    "    display_df = df.copy()\n",
-    "\n",
-    "    def get_genre(row):\n",
-    "        if pd.notna(row[\"genre\"]) and str(row[\"genre\"]).strip() != \"\":\n",
-    "            return row[\"genre\"]\n",
-    "\n",
-    "        tags = str(row[\"tags\"]).split(\",\")\n",
-    "        if len(tags) > 0 and tags[0].strip() != \"\":\n",
-    "            return tags[0].strip()\n",
-    "\n",
-    "        return \"Unknown\"\n",
-    "\n",
-    "    display_df[\"Genre\"] = display_df.apply(get_genre, axis=1)\n",
-    "\n",
-    "    display_df[\"Song\"] = display_df.apply(\n",
-    "        lambda x: f'<a href=\"{x[\"spotify_preview_url\"]}\" target=\"_blank\">{x[\"name\"]}</a>'\n",
-    "        if str(x[\"spotify_preview_url\"]).strip() != \"\"\n",
-    "        else x[\"name\"],\n",
-    "        axis=1\n",
-    "    )\n",
-    "\n",
-    "    display_df[\"Match Score\"] = display_df[\"score\"].round(3)\n",
-    "\n",
-    "    return display_df[[\"Song\", \"artist\", \"Genre\", \"Match Score\"]].rename(\n",
-    "        columns={\"artist\": \"Artist\"}\n",
-    "    )\n",
-    "\n",
-    "\n",
-    "user_ids = sorted(ULH[\"user_id\"].unique())\n",
-    "\n",
-    "user_id = st.selectbox(\"Select User ID\", user_ids)\n",
-    "\n",
-    "user_history = ULH[ULH[\"user_id\"] == user_id]\n",
-    "\n",
-    "if not user_history.empty:\n",
-    "    st.subheader(f\"Welcome {user_id}!\")\n",
-    "\n",
-    "    user_music = user_history.merge(MI_info, on=\"track_id\", how=\"left\")\n",
-    "\n",
-    "    user_music[\"genre_clean\"] = user_music[\"genre\"]\n",
-    "\n",
-    "    user_music[\"genre_clean\"] = user_music.apply(\n",
-    "        lambda row: str(row[\"tags\"]).split(\",\")[0].strip()\n",
-    "        if pd.isna(row[\"genre_clean\"]) or str(row[\"genre_clean\"]).strip() == \"\"\n",
-    "        else row[\"genre_clean\"],\n",
-    "        axis=1\n",
-    "    )\n",
-    "\n",
-    "    col1, col2 = st.columns(2)\n",
-    "\n",
-    "    with col1:\n",
-    "        st.markdown(\"### Your Listening Genres\")\n",
-    "\n",
-    "        genre_counts = (\n",
-    "            user_music.drop_duplicates(subset=[\"track_id\"])\n",
-    "            [\"genre_clean\"]\n",
-    "            .value_counts()\n",
-    "            .head(6)\n",
-    "        )\n",
-    "\n",
-    "        blue_colors = [\n",
-    "            \"#0D47A1\", \"#1565C0\", \"#1976D2\",\n",
-    "            \"#1E88E5\", \"#42A5F5\", \"#90CAF9\"\n",
-    "        ]\n",
-    "\n",
-    "        fig, ax = plt.subplots(figsize=(6, 6))\n",
-    "        ax.pie(\n",
-    "            genre_counts,\n",
-    "            labels=genre_counts.index,\n",
-    "            autopct=\"%1.1f%%\",\n",
-    "            startangle=90,\n",
-    "            colors=blue_colors,\n",
-    "            wedgeprops={\"edgecolor\": \"white\", \"linewidth\": 1}\n",
-    "        )\n",
-    "        ax.set_title(\"Genre Distribution\", fontsize=14, fontweight=\"bold\")\n",
-    "        st.pyplot(fig)\n",
-    "\n",
-    "    with col2:\n",
-    "        st.markdown(\"### Your Top Artists\")\n",
-    "\n",
-    "        top_artists = (\n",
-    "            user_music.groupby(\"artist\")\n",
-    "            .agg(\n",
-    "                Songs=(\"track_id\", \"nunique\"),\n",
-    "                Plays=(\"playcount\", \"sum\")\n",
-    "            )\n",
-    "            .reset_index()\n",
-    "            .sort_values([\"Plays\", \"Songs\"], ascending=False)\n",
-    "            .head(3)\n",
-    "        )\n",
-    "\n",
-    "        st.dataframe(\n",
-    "            top_artists[[\"artist\"]].rename(columns={\"artist\": \"Top Artists\"}),\n",
-    "            hide_index=True,\n",
-    "            use_container_width=True\n",
-    "        )\n",
-    "\n",
-    "    st.divider()\n",
-    "\n",
-    "    st.subheader(\"Get Recommendations\")\n",
-    "\n",
-    "    mode = st.radio(\n",
-    "        \"Choose recommendation type\",\n",
-    "        [\n",
-    "            \"Based on your music taste\",\n",
-    "            \"Based on genre\",\n",
-    "            \"Based on a song\"\n",
-    "        ]\n",
-    "    )\n",
-    "\n",
-    "    limit = st.slider(\"Number of recommendations\", 5, 25, 10)\n",
-    "\n",
-    "    if mode == \"Based on genre\":\n",
-    "        genre = st.text_input(\"Enter genre or tag\", value=\"pop\")\n",
-    "\n",
-    "    if mode == \"Based on a song\":\n",
-    "        song = st.text_input(\"Enter song name\", value=\"Creep\")\n",
-    "\n",
-    "    if st.button(\"Recommend\"):\n",
-    "        if mode == \"Based on your music taste\":\n",
-    "            result = recommend_by_user(user_id, limit)\n",
-    "\n",
-    "        elif mode == \"Based on genre\":\n",
-    "            result = recommend_by_genre(genre, limit)\n",
-    "\n",
-    "        else:\n",
-    "            result = hybrid_recommend(song, limit, exclude_same_artist=True)\n",
-    "\n",
-    "        if result.empty:\n",
-    "            st.warning(\"No recommendations found.\")\n",
-    "        else:\n",
-    "            table = clean_display_table(result)\n",
-    "            st.markdown(\n",
-    "                table.to_html(escape=False, index=False),\n",
-    "                unsafe_allow_html=True\n",
-    "            )"
-   ]
-  }
- ],
- "metadata": {
-  "kernelspec": {
-   "display_name": "Python 3 (ipykernel)",
-   "language": "python",
-   "name": "python3"
-  },
-  "language_info": {
-   "codemirror_mode": {
-    "name": "ipython",
-    "version": 3
-   },
-   "file_extension": ".py",
-   "mimetype": "text/x-python",
-   "name": "python",
-   "nbconvert_exporter": "python",
-   "pygments_lexer": "ipython3",
-   "version": "3.11.7"
-  }
- },
- "nbformat": 4,
- "nbformat_minor": 5
+import os
+import json
+import kagglehub
+import streamlit as st
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+import numpy as np
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.cluster import KMeans
+
+st.set_page_config(page_title="Waveline", page_icon="🎵", layout="wide", initial_sidebar_state="collapsed")
+
+VIBE_COLORS = {
+    "High Energy":    "#f04060",
+    "Chill":          "#40a0f0",
+    "Acoustic":       "#60c060",
+    "Dance":          "#f0a020",
+    "Melancholic":    "#a060f0",
+    "Upbeat Pop":     "#f06090",
+    "Instrumental":   "#40c0b0",
+    "Dark & Intense": "#8040a0",
 }
+
+TIER_COLORS = ["#ffd700","#c0c0c0","#cd7f32","#7c5cfc","#6b44f0","#5a3dcc","#4a2eaa","#3d25a0","#2a1880","#1e1060"]
+
+st.markdown("""
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+
+html, body { background: #000 !important; }
+.main, .block-container,
+[data-testid="stAppViewContainer"],[data-testid="stHeader"],
+[data-testid="stToolbar"],[data-testid="stBottom"],
+.stApp { background: #000 !important; background-color: #000 !important; }
+.block-container { padding: 1.8rem 3rem 4rem !important; max-width: 1240px !important; }
+html, body, [class*="css"], .stMarkdown, p, div, span, label {
+  font-family: 'DM Sans', sans-serif !important; color: #c0c0d8 !important;
+}
+#MainMenu, footer, header,
+[data-testid="stHeader"],[data-testid="stToolbar"],
+[data-testid="stDecoration"] { display: none !important; }
+
+/* INPUTS */
+.stTextInput > div > div > input {
+  background: #0a0a14 !important; border: 1px solid #1e1e32 !important;
+  border-radius: 10px !important; color: #d0d0e8 !important;
+  font-size: 0.9rem !important; padding: 0.7rem 1rem !important; caret-color: #7c5cfc !important;
+}
+.stTextInput > div > div > input:focus { border-color: #7c5cfc !important; box-shadow: 0 0 0 3px #7c5cfc18 !important; outline: none !important; }
+.stTextInput > div > div > input::placeholder { color: #252540 !important; }
+.stTextInput label { display: none !important; }
+
+/* BUTTONS */
+.stButton > button {
+  background: linear-gradient(135deg, #5c36d4, #8a58f0) !important;
+  border: none !important; border-radius: 10px !important; color: #fff !important;
+  font-family: 'DM Sans', sans-serif !important; font-weight: 500 !important;
+  font-size: 0.9rem !important; padding: 0.6rem 1.2rem !important;
+  width: 100% !important; transition: opacity 0.18s !important;
+}
+.stButton > button:hover { opacity: 0.85 !important; }
+
+/* MAIN NAV TABS */
+.stTabs [data-baseweb="tab-list"] {
+  background: transparent !important; border: none !important;
+  border-bottom: 1px solid #0e0e1e !important; border-radius: 0 !important;
+  padding: 0 !important; gap: 0 !important;
+  display: flex !important; justify-content: space-between !important; width: 100% !important;
+}
+.stTabs [data-baseweb="tab"] {
+  background: transparent !important; border: none !important; border-radius: 0 !important;
+  color: #4a3a80 !important; font-family: 'DM Sans', sans-serif !important;
+  font-weight: 600 !important; font-size: 0.88rem !important; padding: 0.6rem 0 !important;
+  letter-spacing: 0.04em; flex: 1 !important; text-align: center !important;
+  border-bottom: 2px solid transparent !important; transition: color 0.18s, border-color 0.18s !important;
+}
+.stTabs [aria-selected="true"] { background: transparent !important; color: #9b7dfd !important; border-bottom: 2px solid #7c5cfc !important; }
+.stTabs [data-baseweb="tab"]:hover { color: #7c5cfc !important; }
+.stTabs [data-baseweb="tab-panel"] { background: transparent !important; padding-top: 1.8rem !important; }
+.stTabs [data-baseweb="tab-highlight"], .stTabs [data-baseweb="tab-border"] { display: none !important; }
+
+/* INNER TABS */
+.inner-tabs .stTabs [data-baseweb="tab-list"] {
+  background: transparent !important; border: none !important;
+  border-bottom: none !important; gap: 6px !important;
+  justify-content: flex-start !important; padding: 0 !important; margin-bottom: 1rem !important;
+}
+.inner-tabs .stTabs [data-baseweb="tab"] {
+  background: #0e0e1e !important; border: 1px solid #1e1e34 !important;
+  border-radius: 999px !important; color: #4a4a70 !important; font-size: 0.82rem !important;
+  font-weight: 500 !important; padding: 6px 20px !important; flex: 0 !important;
+  border-bottom: 1px solid #1e1e34 !important; letter-spacing: 0.01em !important;
+}
+.inner-tabs .stTabs [aria-selected="true"] {
+  background: #fff !important; color: #000 !important;
+  border-color: #fff !important; border-bottom: 1px solid #fff !important;
+}
+
+/* SELECTBOX */
+[data-baseweb="select"] > div { background: #0a0a14 !important; border: 1px solid #1e1e32 !important; border-radius: 10px !important; color: #c0c0d8 !important; }
+[data-baseweb="popover"] { background: #0a0a14 !important; border: 1px solid #1e1e32 !important; }
+[data-baseweb="menu"] { background: #0a0a14 !important; }
+[role="option"] { background: #0a0a14 !important; color: #a0a0c0 !important; }
+[role="option"]:hover { background: #14142a !important; }
+
+/* STAT CARDS */
+.stat-card { background: #080810; border: 1px solid #121220; border-radius: 14px; padding: 1.3rem 1.2rem; text-align: center; }
+.stat-val { font-family: 'Syne', sans-serif !important; font-size: 2rem; font-weight: 700; color: #e8e8f8 !important; line-height: 1; }
+.stat-label { font-size: 0.7rem; color: #282840 !important; margin-top: 7px; text-transform: uppercase; letter-spacing: 0.1em; }
+
+/* SONG ROWS */
+.song-row { display: flex; align-items: center; gap: 14px; background: #070710; border: 1px solid #10101e; border-radius: 11px; padding: 0.75rem 1rem; margin-bottom: 6px; }
+.song-row:hover { border-color: #2a1e60; background: #0a0a18; }
+.song-num { font-family: 'Syne', sans-serif !important; font-size: 0.78rem; font-weight: 700; color: #1e1e38 !important; min-width: 22px; text-align: center; cursor: default; user-select: none; transition: all 0.15s; }
+.song-num.playing { color: #7c5cfc !important; font-size: 1rem; }
+.song-info { flex: 1; min-width: 0; }
+.song-name { font-weight: 500 !important; font-size: 0.86rem !important; color: #c0c0de !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.song-name:hover { color: #a080ff !important; }
+.song-name.has-preview { cursor: pointer; }
+.song-name.no-preview { cursor: default; }
+.song-artist { font-size: 0.73rem !important; color: #282840 !important; margin-top: 2px; }
+.song-badge { background: #0a0a1a; border: 1px solid #181830; border-radius: 5px; padding: 2px 8px; font-size: 0.7rem !important; color: #4a3a80 !important; white-space: nowrap; flex-shrink: 0; }
+.song-plays { font-size: 0.73rem !important; color: #1a1a30 !important; min-width: 50px; text-align: right; }
+.score-bar-bg { height: 3px; border-radius: 2px; background: #0e0e1e; margin-top: 5px; }
+.score-bar-fill { height: 3px; border-radius: 2px; background: linear-gradient(90deg, #5c36d4, #8a58f0); }
+
+/* VIBE BADGES */
+.vibe-badge { display: inline-block; border-radius: 6px; padding: 2px 10px; font-size: 0.68rem !important; font-weight: 600; letter-spacing: 0.04em; white-space: nowrap; flex-shrink: 0; border: 1px solid transparent; }
+
+/* VIBE CARDS - clickable */
+.vibe-card-btn { border-radius: 11px; padding: 0.65rem 1rem; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: opacity 0.18s, transform 0.1s; border: 1px solid transparent; }
+.vibe-card-btn:hover { opacity: 0.8; transform: translateX(3px); }
+.vibe-card-name { font-family: 'Syne', sans-serif !important; font-size: 0.82rem; font-weight: 700; }
+
+/* SEASON CARDS - clickable, no bar */
+.season-grid { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+.season-card { border-radius: 14px; padding: 1rem 1.2rem; flex: 1; min-width: 130px; border: 1px solid transparent; cursor: pointer; transition: opacity 0.18s, transform 0.1s; }
+.season-card:hover { opacity: 0.85; transform: translateY(-2px); }
+.season-card-name { font-family: 'Syne', sans-serif !important; font-size: 0.9rem; font-weight: 700; }
+.season-card-count { font-size: 0.7rem !important; opacity: 0.6; margin-top: 3px; text-transform: uppercase; letter-spacing: 0.08em; }
+
+/* GENRE PILLS - clickable multi-select */
+.genre-pill { display: inline-block; background: #0e0e1e; border: 1px solid #1e1e34; border-radius: 999px; padding: 6px 16px; font-size: 0.82rem !important; color: #5a5a80 !important; margin: 4px; cursor: pointer; transition: all 0.18s; user-select: none; }
+.genre-pill:hover { border-color: #7c5cfc; color: #9080d0 !important; }
+.genre-pill.active { background: #7c5cfc !important; border-color: #7c5cfc !important; color: #fff !important; }
+
+/* AI SEARCH */
+.ai-search-wrap { background: #080812; border: 1px solid #1a1a2e; border-radius: 14px; padding: 1.2rem 1.4rem; margin-bottom: 1.4rem; }
+.ai-search-label { font-size: 0.7rem; color: #3a3a5a; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 8px; }
+
+/* MORE BUTTON */
+.more-btn-wrap { display: flex; justify-content: center; margin-top: 1rem; }
+.more-btn-wrap .stButton > button { width: auto !important; padding: 8px 32px !important; background: transparent !important; border: 1px solid #2a2a44 !important; color: #7070a0 !important; font-size: 0.85rem !important; border-radius: 999px !important; }
+.more-btn-wrap .stButton > button:hover { border-color: #7c5cfc !important; color: #a090d0 !important; }
+
+/* TIER LEADERBOARD */
+.tier-row { display: flex; align-items: center; gap: 14px; padding: 10px 14px; border-radius: 10px; margin-bottom: 5px; background: #070710; border: 1px solid #10101e; }
+.tier-rank { font-family: 'Syne', sans-serif !important; font-size: 1.1rem; font-weight: 800; min-width: 30px; text-align: center; }
+.tier-info { flex: 1; min-width: 0; }
+.tier-name { font-size: 0.88rem; font-weight: 600; color: #d0d0e8; }
+.tier-sub { font-size: 0.72rem; color: #282840; margin-top: 2px; }
+.tier-bar-wrap { width: 160px; }
+.tier-plays { font-size: 0.75rem; color: #3a3a5a; text-align: right; min-width: 70px; }
+
+/* PROFILE */
+.profile-avatar { width: 66px; height: 66px; border-radius: 50%; background: linear-gradient(135deg, #3a1e90, #6b44f0); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif !important; font-size: 1.5rem; font-weight: 700; color: #fff !important; margin-bottom: 0.8rem; }
+.vibe-card { border-radius: 12px; padding: 0.9rem 1.1rem; display: flex; flex-direction: column; gap: 4px; min-width: 110px; flex: 1; border: 1px solid transparent; }
+.vibe-card-count-sm { font-size: 0.68rem !important; opacity: 0.55; text-transform: uppercase; letter-spacing: 0.08em; }
+.vibe-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+
+/* MISC */
+.wl-logo { font-family: 'Syne', sans-serif !important; font-size: 1.45rem; font-weight: 800; letter-spacing: -0.04em; color: #e0e0f0 !important; margin-bottom: 1.4rem; }
+.wl-logo span { color: #7c5cfc !important; }
+.section-label { font-family: 'Syne', sans-serif !important; font-size: 0.62rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: #28205a !important; margin-bottom: 4px; }
+hr.wl-divider { border: none; border-top: 1px solid #0c0c1a; margin: 1.4rem 0; }
+.stSpinner > div { border-top-color: #7c5cfc !important; }
+
+/* SIGN-IN */
+.si-card { background: #060610; border: 1px solid #14142a; border-radius: 22px; padding: 3rem 2.8rem 2.5rem; width: 460px; text-align: center; }
+.si-pill { display: inline-block; background: #0e0a22; border: 1px solid #2a1e5a; color: #7c5cfc !important; font-size: 0.68rem !important; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; padding: 5px 16px; border-radius: 999px; margin-bottom: 1.4rem; }
+.si-title { font-family: 'Syne', sans-serif !important; font-size: 2.8rem; font-weight: 800; color: #e8e8f8 !important; letter-spacing: -0.05em; line-height: 1; margin-bottom: 0.5rem; }
+.si-title span { color: #7c5cfc !important; }
+.si-sub { color: #282848 !important; font-size: 0.86rem; margin-bottom: 2rem; line-height: 1.55; }
+audio { display: none; }
+</style>
+
+<script>
+window._wl_audio = null; window._wl_playing_id = null; window._wl_timer = null;
+function wlPlay(rowId, url) {
+  var numEl = document.getElementById('num_' + rowId);
+  if (window._wl_playing_id === rowId) {
+    if (window._wl_audio) { window._wl_audio.pause(); window._wl_audio = null; }
+    window._wl_playing_id = null;
+    if (window._wl_timer) { clearTimeout(window._wl_timer); window._wl_timer = null; }
+    if (numEl) { numEl.textContent = numEl.dataset.num; numEl.classList.remove('playing'); }
+    return;
+  }
+  if (window._wl_audio) {
+    window._wl_audio.pause();
+    var prevEl = document.getElementById('num_' + window._wl_playing_id);
+    if (prevEl) { prevEl.textContent = prevEl.dataset.num; prevEl.classList.remove('playing'); }
+  }
+  if (window._wl_timer) { clearTimeout(window._wl_timer); window._wl_timer = null; }
+  if (!url || url === 'None' || url === '') return;
+  var audio = new Audio(url);
+  audio.crossOrigin = 'anonymous';
+  window._wl_audio = audio; window._wl_playing_id = rowId;
+  if (numEl) { numEl.textContent = '▶'; numEl.classList.add('playing'); }
+  audio.play().catch(function(e){});
+  audio.addEventListener('ended', function() {
+    window._wl_audio = null; window._wl_playing_id = null;
+    if (numEl) { numEl.textContent = numEl.dataset.num; numEl.classList.remove('playing'); }
+  });
+  window._wl_timer = setTimeout(function() {
+    if (window._wl_playing_id === rowId && numEl) { numEl.textContent = numEl.dataset.num; numEl.classList.remove('playing'); }
+  }, 3000);
+}
+</script>
+""", unsafe_allow_html=True)
+
+
+# ─────────────────────────────────────────────
+# DATA & MODEL
+# ─────────────────────────────────────────────
+@st.cache_data
+def load_data():
+    path    = kagglehub.dataset_download("undefinenull/million-song-dataset-spotify-lastfm")
+    music   = pd.read_csv(os.path.join(path, "Music Info.csv"))
+    history = pd.read_csv(os.path.join(path, "User Listening History.csv"))
+    music   = music.sample(min(50000, len(music)), random_state=42)
+    history = history.sample(min(200000, len(history)), random_state=42)
+    return music, history
+
+
+@st.cache_resource
+def build_model(music, history):
+    sd    = music.copy()
+    feats = ["danceability","energy","valence","tempo","acousticness","instrumentalness","liveness","speechiness","loudness"]
+    sd    = sd.dropna(subset=feats).drop_duplicates(subset=["track_id"]).reset_index(drop=True)
+    for col in ["name","artist","genre","tags","spotify_preview_url"]:
+        sd[col] = sd[col].fillna("") if col in sd.columns else ""
+    scaler        = StandardScaler()
+    audio_scaled  = scaler.fit_transform(sd[feats])
+    kmeans        = KMeans(n_clusters=8, random_state=42, n_init=10)
+    sd["cluster"] = kmeans.fit_predict(audio_scaled)
+    centers       = pd.DataFrame(kmeans.cluster_centers_, columns=feats)
+    vibe_names    = _auto_label_clusters(centers)
+    sd["vibe"]    = sd["cluster"].map(vibe_names)
+    sd["text_features"] = sd["tags"] + " " + sd["genre"] + " " + sd["artist"]
+    text_matrix   = TfidfVectorizer(stop_words="english", max_features=5000).fit_transform(sd["text_features"])
+    pop           = history.groupby("track_id")["playcount"].sum().reset_index()
+    sd            = sd.merge(pop, on="track_id", how="left")
+    sd["playcount"]        = sd["playcount"].fillna(0)
+    sd["popularity_score"] = MinMaxScaler().fit_transform(sd[["playcount"]])
+    return sd, audio_scaled, text_matrix, vibe_names, feats
+
+
+def _auto_label_clusters(centers):
+    labels, used = {}, set()
+    order = ["Acoustic","Instrumental","Dark & Intense","Dance","High Energy","Upbeat Pop","Melancholic","Chill"]
+    for idx, row in centers.iterrows():
+        e, d, v, ac, ins = row["energy"], row["danceability"], row["valence"], row["acousticness"], row["instrumentalness"]
+        if   ac > 0.6  and e < 0.4  and "Acoustic"       not in used: label = "Acoustic"
+        elif ins > 0.5              and "Instrumental"    not in used: label = "Instrumental"
+        elif e > 0.8   and v < 0.35 and "Dark & Intense"  not in used: label = "Dark & Intense"
+        elif e > 0.75  and d > 0.7  and "Dance"           not in used: label = "Dance"
+        elif e > 0.7   and v > 0.6  and "High Energy"     not in used: label = "High Energy"
+        elif v > 0.65  and d > 0.6  and "Upbeat Pop"      not in used: label = "Upbeat Pop"
+        elif v < 0.35  and e < 0.5  and "Melancholic"     not in used: label = "Melancholic"
+        elif e < 0.45              and "Chill"            not in used: label = "Chill"
+        else:
+            label = next((l for l in order if l not in used), f"Vibe {idx}")
+        used.add(label); labels[idx] = label
+    return labels
+
+
+def get_vibe_color(vibe): return VIBE_COLORS.get(str(vibe), "#7c5cfc")
+
+
+def hybrid_recommend(song_name, song_data, audio_scaled, text_matrix, limit=10, exclude_same_artist=True):
+    matches = song_data[song_data["name"].str.lower().str.contains(song_name.lower(), na=False)]
+    if matches.empty: return pd.DataFrame()
+    idx    = matches.index[0]
+    a      = cosine_similarity(audio_scaled[idx].reshape(1,-1), audio_scaled)[0]
+    t      = cosine_similarity(text_matrix[idx], text_matrix)[0]
+    cb     = (song_data["cluster"] == song_data.iloc[idx]["cluster"]).astype(int).values
+    scores = 0.35*a + 0.45*t + 0.10*song_data["popularity_score"].values + 0.10*cb
+    scores[idx] = -1
+    res    = song_data.copy(); res["score"] = scores
+    if exclude_same_artist:
+        res = res[res["artist"] != song_data.iloc[idx]["artist"]]
+    return res.sort_values("score", ascending=False).head(limit)
+
+
+def recommend_by_user(user_id, history, song_data, audio_scaled, text_matrix, limit=50):
+    uh = history[history["user_id"] == user_id]
+    if uh.empty: return pd.DataFrame()
+    top_tracks = uh.sort_values("playcount", ascending=False).head(5)["track_id"]
+    all_recs   = []
+    for tid in top_tracks:
+        m = song_data[song_data["track_id"] == tid]
+        if not m.empty:
+            r = hybrid_recommend(m.iloc[0]["name"], song_data, audio_scaled, text_matrix, limit=limit)
+            if not r.empty: all_recs.append(r)
+    if not all_recs: return pd.DataFrame()
+    final = pd.concat(all_recs)
+    final = final[~final["track_id"].isin(uh["track_id"].tolist())]
+    return final.drop_duplicates(subset=["track_id"]).sort_values("score", ascending=False).head(limit)
+
+
+def recommend_by_genre_multi(genres, song_data, limit=50):
+    """AND logic: songs must match ALL selected genres via genre or tags."""
+    res = song_data.copy()
+    for g in genres:
+        g = g.strip().lower()
+        mask = (
+            song_data["genre"].str.lower().str.contains(g, na=False) |
+            song_data["tags"].str.lower().str.contains(rf"\b{g}\b", na=False, regex=True)
+        )
+        res = res[mask]
+    if res.empty: return pd.DataFrame()
+    res["score"] = res["popularity_score"]
+    return res.sort_values(["popularity_score","playcount"], ascending=False).head(limit)
+
+
+def get_genre(row):
+    if str(row.get("genre","")).strip(): return row["genre"]
+    tags = str(row.get("tags","")).split(",")
+    return tags[0].strip() if tags and tags[0].strip() else ""
+
+
+def ai_playlist_from_query(query, user_id, history, song_data, audio_scaled, text_matrix):
+    """
+    Semantic keyword expansion: maps natural language → music tags,
+    then personalizes using user listening history audio profile.
+    """
+    # ── Semantic expansion map ──
+    # Keys are concepts the user might type; values are actual music tags to search
+    SEMANTIC_MAP = {
+        # Moods
+        "sad": ["sad","melancholy","heartbreak","sorrow","lonely","cry","depression","grief","tears","blue"],
+        "happy": ["happy","joy","upbeat","cheerful","positive","good vibes","fun","bright","optimistic","euphoric"],
+        "angry": ["angry","rage","intense","aggressive","heavy","metal","hard","fury","dark"],
+        "calm": ["calm","peaceful","serene","gentle","soft","quiet","mellow","tranquil","ambient"],
+        "romantic": ["love","romance","romantic","intimate","passion","couples","heart","sweet","tender"],
+        "melancholy": ["melancholy","sad","bittersweet","reflective","nostalgic","wistful","somber"],
+        "nostalgic": ["nostalgic","throwback","classic","retro","memories","old school","vintage"],
+        "hopeful": ["hopeful","uplifting","inspiring","positive","motivational","rise","overcome"],
+        "lonely": ["lonely","alone","solitude","isolated","empty","quiet","missing"],
+        "anxious": ["anxious","tense","nervous","uneasy","dark","atmospheric","suspense"],
+
+        # Activities
+        "workout": ["workout","gym","training","fitness","pump","run","energy","power","intense","sweat","cardio"],
+        "running": ["run","running","jog","cardio","energy","fast","pump","athletic","sprint"],
+        "study": ["study","focus","concentrate","ambient","instrumental","piano","background","calm","soft"],
+        "sleep": ["sleep","lullaby","calm","peaceful","night","dream","rest","relax","soothe","quiet","soft"],
+        "party": ["party","dance","club","dj","bass","banger","anthem","hype","festival","rave","bounce"],
+        "driving": ["road","trip","drive","highway","journey","cruise","open","windows","fast","freedom"],
+        "cooking": ["kitchen","warm","cozy","soul","feel good","comfort","home","groove"],
+        "meditation": ["meditation","zen","ambient","peaceful","spiritual","mindful","breathe","calm","healing"],
+        "reading": ["ambient","soft","instrumental","quiet","background","focus","piano","acoustic"],
+        "hiking": ["adventure","nature","explore","free","outdoor","open","journey","discovery"],
+
+        # Times/settings
+        "morning": ["morning","sunrise","fresh","wake up","bright","start","coffee","new day","gentle"],
+        "night": ["night","late","dark","moonlight","stars","midnight","dreamy","atmospheric","nocturnal"],
+        "rainy": ["rain","rainy","grey","gloomy","cozy","indoor","melancholy","acoustic","soft"],
+        "sunny": ["summer","sunny","bright","warm","cheerful","happy","beach","positive","feel good"],
+        "winter": ["winter","cold","snow","cozy","fireplace","december","frost","christmas"],
+        "summer": ["summer","beach","sun","hot","vacation","tropical","warm","festival","bbq"],
+        "afternoon": ["afternoon","lazy","chill","mellow","relaxed","groove","soft","easy"],
+        "friday": ["friday","weekend","party","hype","end of week","celebration","fun","dance"],
+
+        # Genres/sounds
+        "acoustic": ["acoustic","guitar","unplugged","folk","singer","songwriter","intimate","raw"],
+        "electronic": ["electronic","synth","edm","techno","house","beats","digital","rave"],
+        "jazz": ["jazz","blues","swing","saxophone","trumpet","improvise","smooth","soul"],
+        "classical": ["classical","orchestra","piano","symphony","concerto","baroque","instrumental"],
+        "hip hop": ["hip hop","rap","trap","beats","flow","rhyme","urban","street"],
+        "rock": ["rock","guitar","drums","band","electric","riff","classic rock","alternative"],
+        "pop": ["pop","catchy","mainstream","chart","hit","radio","hook","upbeat"],
+        "folk": ["folk","acoustic","storytelling","indie","banjo","country","roots"],
+        "soul": ["soul","r&b","groove","warm","vintage","smooth","funk","motown"],
+        "chill": ["chill","relax","lo-fi","mellow","laid back","easy","smooth","vibes"],
+
+        # Compound/descriptive
+        "rainy afternoon": ["sad","rain","melancholy","acoustic","grey","soft","cozy","quiet","reflective"],
+        "late night": ["night","late","dark","atmospheric","dreamy","mellow","ambient","deep"],
+        "good vibes": ["happy","positive","feel good","upbeat","summer","dance","cheerful","fun"],
+        "heartbreak": ["heartbreak","sad","lonely","miss","lost","cry","breakup","sorrow","tears"],
+        "pump up": ["energy","pump","workout","intense","power","motivate","hype","strong","bass"],
+        "feel good": ["happy","upbeat","positive","fun","joy","cheerful","summer","dance","bright"],
+        "chill out": ["chill","relax","mellow","soft","calm","ambient","lo-fi","easy","laid back"],
+        "road trip": ["road","trip","drive","highway","journey","freedom","adventure","cruise","travel"],
+        "sunday morning": ["gentle","soft","acoustic","warm","cozy","peaceful","quiet","morning","calm"],
+        "focus": ["focus","study","ambient","instrumental","concentrate","background","quiet","flow"],
+    }
+
+    q_lower = query.lower().strip()
+
+    # Collect tags: first try compound phrases, then individual words
+    expanded_tags = set()
+
+    # Try full query
+    if q_lower in SEMANTIC_MAP:
+        expanded_tags.update(SEMANTIC_MAP[q_lower])
+
+    # Try 2-word combos
+    words = q_lower.split()
+    for i in range(len(words)-1):
+        combo = f"{words[i]} {words[i+1]}"
+        if combo in SEMANTIC_MAP:
+            expanded_tags.update(SEMANTIC_MAP[combo])
+
+    # Try individual words
+    for w in words:
+        if w in SEMANTIC_MAP:
+            expanded_tags.update(SEMANTIC_MAP[w])
+        else:
+            # Direct partial match — word itself as a tag
+            expanded_tags.add(w)
+
+    # If still empty, use words directly
+    if not expanded_tags:
+        expanded_tags = set(words)
+
+    tags  = list(expanded_tags)
+    title = query.title()
+    mood  = f"Songs for: {query}"
+
+    # Score songs by tag matches (partial string match, more flexible)
+    def tag_score(row):
+        combined = (str(row["tags"]) + " " + str(row["genre"])).lower()
+        return sum(1 for t in tags if t in combined)
+
+    scores_arr = [tag_score(row) for _, row in song_data.iterrows()]
+    song_data["_tag_score"] = scores_arr
+    matched = song_data[song_data["_tag_score"] > 0].copy()
+
+    # If still empty, try even looser — any word in name or artist
+    if matched.empty:
+        def loose_score(row):
+            combined = (str(row["name"]) + " " + str(row["artist"]) + " " + str(row["tags"])).lower()
+            return sum(1 for w in words if w in combined)
+        song_data["_tag_score"] = [loose_score(r) for _, r in song_data.iterrows()]
+        matched = song_data[song_data["_tag_score"] > 0].copy()
+
+    if matched.empty:
+        song_data.drop(columns=["_tag_score"], inplace=True, errors="ignore")
+        return pd.DataFrame(), title, mood
+
+    # Personalize: blend tag score with user's audio profile
+    uh = history[history["user_id"] == user_id]
+    if not uh.empty:
+        user_track_ids   = uh["track_id"].tolist()
+        user_indices_all = song_data[song_data["track_id"].isin(user_track_ids)].index.tolist()
+        if user_indices_all:
+            user_vec = audio_scaled[user_indices_all].mean(axis=0).reshape(1, -1)
+            matched["_audio_sim"] = cosine_similarity(user_vec, audio_scaled[matched.index])[0]
+            max_ts = matched["_tag_score"].max() or 1
+            matched["_final"] = (
+                0.45 * (matched["_tag_score"] / max_ts) +
+                0.35 * matched["_audio_sim"] +
+                0.20 * matched["popularity_score"]
+            )
+        else:
+            max_ts = matched["_tag_score"].max() or 1
+            matched["_final"] = (matched["_tag_score"] / max_ts) * 0.7 + matched["popularity_score"] * 0.3
+    else:
+        max_ts = matched["_tag_score"].max() or 1
+        matched["_final"] = (matched["_tag_score"] / max_ts) * 0.7 + matched["popularity_score"] * 0.3
+
+    result = matched.sort_values("_final", ascending=False).drop_duplicates("track_id").head(50)
+    song_data.drop(columns=["_tag_score"], inplace=True, errors="ignore")
+    return result, title, mood
+
+
+# ─────────────────────────────────────────────
+# SESSION STATE
+# ─────────────────────────────────────────────
+defaults = {
+    "logged_in": False, "username": "", "user_id": None, "si_query": "",
+    "taste_count": 10, "genre_count": 10, "song_count": 10,
+    "taste_result": None, "genre_result": None, "song_result": None,
+    "genre_input": "", "song_input": "",
+    "active_tab": 0,
+    "explore_source": None,   # "vibe", "season", "ai", "genre_multi"
+    "explore_vibe": None,
+    "explore_season": None,
+    "explore_ai_query": "",
+    "explore_ai_result": None,
+    "explore_ai_title": "",
+    "explore_ai_mood": "",
+    "explore_ai_count": 10,
+    "explore_season_data": {},
+    "explore_season_count": {},
+    "selected_genres": [],
+    "genre_multi_result": None,
+    "genre_multi_count": 10,
+}
+for k, v in defaults.items():
+    if k not in st.session_state: st.session_state[k] = v
+
+
+# ─────────────────────────────────────────────
+# LOAD
+# ─────────────────────────────────────────────
+with st.spinner("Loading Waveline…"):
+    music, history = load_data()
+    song_data, audio_scaled, text_matrix, vibe_names, AUDIO_FEATS = build_model(music, history)
+
+user_ids = sorted(history["user_id"].dropna().unique().tolist())
+all_genres_list = song_data["genre"].replace("", np.nan).dropna().value_counts().head(16).index.tolist()
+TIER_MEDALS = {1:"#FFD700", 2:"#C0C0C0", 3:"#CD7F32"}
+
+
+# ─────────────────────────────────────────────
+# SIGN-IN
+# ─────────────────────────────────────────────
+if not st.session_state.logged_in:
+    st.markdown("""
+    <div style="height:6vh"></div>
+    <div style="display:flex;justify-content:center;margin-bottom:2rem">
+      <div class="si-card">
+        <div class="si-pill">Now Playing</div>
+        <div class="si-title">Wave<span>line</span></div>
+        <div class="si-sub">Your AI-powered music universe.<br>Search your User ID below to tune in.</div>
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
+    _, col, _ = st.columns([1, 1.5, 1])
+    with col:
+        query = st.text_input("uid_search", placeholder="Type 3+ characters of your User ID…", key="si_query", label_visibility="collapsed")
+        if query and len(query) >= 3:
+            matches = [u for u in user_ids if query.lower() in str(u).lower()][:7]
+            if matches:
+                st.markdown('<div style="background:#060610;border:1px solid #12122a;border-radius:10px;overflow:hidden;margin-top:4px">', unsafe_allow_html=True)
+                for m in matches:
+                    if st.button(f"  {m}", key=f"uid__{m}", use_container_width=True):
+                        st.session_state.logged_in = True
+                        st.session_state.username  = str(m)
+                        st.session_state.user_id   = m
+                        st.rerun()
+                st.markdown('</div>', unsafe_allow_html=True)
+            else:
+                st.markdown('<div style="color:#1e1e38;font-size:0.8rem;margin-top:8px;text-align:center">No matching IDs found</div>', unsafe_allow_html=True)
+        elif query:
+            st.markdown('<div style="color:#1e1e38;font-size:0.78rem;margin-top:8px;text-align:center">Keep typing…</div>', unsafe_allow_html=True)
+        st.markdown('<div style="color:#141428;font-size:0.7rem;margin-top:1.4rem;text-align:center">No password required · Demo mode</div>', unsafe_allow_html=True)
+    st.stop()
+
+
+# ─────────────────────────────────────────────
+# HEADER
+# ─────────────────────────────────────────────
+uid      = st.session_state.user_id
+initials = st.session_state.username[:2].upper()
+short_id = "···" + st.session_state.username[-3:]
+
+col_logo, _, col_user = st.columns([1, 4, 1])
+with col_logo:
+    st.markdown('<div class="wl-logo">Wave<span>line</span></div>', unsafe_allow_html=True)
+with col_user:
+    st.markdown(f"""
+    <div style="display:flex;align-items:center;justify-content:flex-end;gap:10px;padding-top:4px">
+      <span style="font-size:0.72rem;color:#2e2e50;font-family:monospace">{short_id}</span>
+      <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#3a1e90,#6b44f0);
+                  display:flex;align-items:center;justify-content:center;
+                  font-family:Syne,sans-serif;font-size:0.78rem;font-weight:700;color:#fff">{initials}</div>
+    </div>""", unsafe_allow_html=True)
+
+# Pre-compute
+user_history   = history[history["user_id"] == uid]
+user_music     = user_history.merge(music, on="track_id", how="left")
+user_song_data = user_history.merge(
+    song_data[["track_id","vibe","cluster"] + AUDIO_FEATS + ["popularity_score","playcount"]],
+    on="track_id", how="left"
+)
+top10_global = song_data.sort_values(["playcount","popularity_score"], ascending=False).drop_duplicates(subset=["track_id"]).head(10)
+
+
+# ─────────────────────────────────────────────
+# HELPERS
+# ─────────────────────────────────────────────
+_row_counter = [0]
+
+def render_song_row(i, row, show_score=False, show_genre=True, show_vibe=False, id_prefix="r"):
+    _row_counter[0] += 1
+    row_id  = f"{id_prefix}_{_row_counter[0]}"
+    genre   = get_genre(row) if show_genre else ""
+    plays   = f"{int(row.get('playcount',0)):,}" if row.get("playcount",0) > 0 else ""
+    preview = str(row.get("spotify_preview_url","")).strip()
+    name    = str(row.get("name","Unknown")).replace('"','&quot;').replace("'","&#39;")
+    artist  = str(row.get("artist",""))
+    vibe    = str(row.get("vibe","")) if show_vibe else ""
+    if preview and preview not in ("nan","None",""):
+        nc, cls = f'onclick="wlPlay(\'{row_id}\', \'{preview}\')"', "song-name has-preview"
+    else:
+        nc, cls = "", "song-name no-preview"
+    score_html = ""
+    if show_score and "score" in row and pd.notna(row.get("score")):
+        pct = max(0, min(100, int(float(row["score"])*100)))
+        score_html = f'<div class="score-bar-bg"><div class="score-bar-fill" style="width:{pct}%"></div></div>'
+    badge     = f'<span class="song-badge">{genre}</span>' if genre else ""
+    vibe_html = ""
+    if vibe and vibe not in ("nan","None",""):
+        c = get_vibe_color(vibe)
+        vibe_html = f'<span class="vibe-badge" style="background:{c}22;border-color:{c}44;color:{c}">{vibe}</span>'
+    st.markdown(f"""
+    <div class="song-row">
+      <span class="song-num" id="num_{row_id}" data-num="{i+1}">{i+1}</span>
+      <div class="song-info">
+        <div class="{cls}" {nc}>{name}</div>
+        <div class="song-artist">{artist}</div>
+        {score_html}
+      </div>
+      {vibe_html}{badge}
+      <span class="song-plays">{plays}</span>
+    </div>
+    """, unsafe_allow_html=True)
+
+
+def radar_chart(values, labels, title, color="#7c5cfc", figsize=(4,4)):
+    n = len(labels)
+    angles = np.linspace(0, 2*np.pi, n, endpoint=False).tolist()
+    vp = values + [values[0]]; angles += [angles[0]]
+    fig, ax = plt.subplots(figsize=figsize, subplot_kw=dict(polar=True))
+    fig.patch.set_facecolor("#000"); ax.set_facecolor("#000")
+    ax.plot(angles, vp, color=color, linewidth=2)
+    ax.fill(angles, vp, color=color, alpha=0.15)
+    ax.set_xticks(angles[:-1]); ax.set_xticklabels(labels, size=7.5, color="#7070a0")
+    ax.set_yticklabels([]); ax.set_ylim(0,1)
+    ax.spines["polar"].set_color("#1a1a2a"); ax.grid(color="#141428", linewidth=0.8)
+    ax.set_title(title, color="#c0c0e0", fontsize=9, pad=16)
+    plt.tight_layout(); return fig
+
+
+def donut_chart(labels, sizes, colors, title):
+    fig, ax = plt.subplots(figsize=(5, 4))
+    fig.patch.set_facecolor("#000"); ax.set_facecolor("#000")
+    wedges, _ = ax.pie(sizes, colors=colors, startangle=90,
+                       wedgeprops={"edgecolor":"#000","linewidth":2,"width":0.55})
+    ax.set_title(title, color="#c0c0e0", fontsize=9, pad=12)
+    ax.legend(wedges, [f"{l}  {s}%" for l, s in zip(labels, sizes)],
+              loc="lower center", bbox_to_anchor=(0.5, -0.22),
+              ncol=2, frameon=False, fontsize=7, labelcolor="#5a5a80")
+    plt.tight_layout(); return fig
+
+
+def treemap_html(labels, values, colors):
+    total = sum(values)
+    W, H  = 560, 340
+    items = sorted(zip(values, labels, colors), reverse=True)
+    def slice_layout(items, x, y, w, h):
+        rects = []
+        if not items: return rects
+        total_a = sum(i[0] for i in items)
+        if w >= h:
+            cx = x
+            for val, label, color in items:
+                rw = w * val / total_a
+                rects.append((cx, y, rw, h, label, val, color)); cx += rw
+        else:
+            cy = y
+            for val, label, color in items:
+                rh = h * val / total_a
+                rects.append((x, cy, w, rh, label, val, color)); cy += rh
+        return rects
+    top4  = items[:4]; rest = items[4:]
+    rects = slice_layout(top4, 0, 0, W, H*0.58) + slice_layout(rest, 0, H*0.58, W, H*0.42)
+    pad   = 3
+    svg_rects = ""
+    for rx, ry, rw, rh, label, val, color in rects:
+        cx, cy = rx+rw/2, ry+rh/2
+        plays  = f"{int(val/1000)}k" if val>=1000 else str(int(val))
+        fs_l   = max(8, min(15, int(rw*0.13)))
+        fs_v   = max(7, min(11, int(rw*0.09)))
+        show_v = rw > 60 and rh > 40
+        val_txt = f"""<text x="{cx}" y="{cy+fs_l}" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="{fs_v}" fill="#ffffff66">{plays} plays</text>""" if show_v else ""
+        svg_rects += f"""<rect x="{rx+pad}" y="{ry+pad}" width="{rw-pad*2}" height="{rh-pad*2}" rx="8" fill="{color}" fill-opacity="0.82"/>
+<text x="{cx}" y="{cy - (8 if show_v else 0)}" text-anchor="middle" font-family="Syne,sans-serif" font-weight="700" font-size="{fs_l}" fill="#fff">{label}</text>{val_txt}"""
+    return f"""<svg viewBox="0 0 {W} {H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;border-radius:12px;display:block">{svg_rects}</svg>"""
+
+
+def render_more_button(count_key, step=5, max_val=50, label="+ Show more"):
+    if st.session_state.get(count_key, 10) < max_val:
+        st.markdown('<div class="more-btn-wrap">', unsafe_allow_html=True)
+        if st.button(label, key=f"more_{count_key}_{id(count_key)}"):
+            st.session_state[count_key] = min(st.session_state.get(count_key, 10) + step, max_val)
+            st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
+
+
+def render_playlist(df, count, count_key, id_prefix, max_val=50):
+    if df is None or df.empty:
+        st.markdown('<div style="color:#28285a;font-size:0.85rem;margin-top:0.5rem">No songs found.</div>', unsafe_allow_html=True)
+        return
+    st.markdown(f'<div style="font-size:0.7rem;color:#28205a;margin-bottom:0.8rem;font-family:Syne,sans-serif;letter-spacing:0.14em;text-transform:uppercase">Showing {min(count,len(df))} of {len(df)} tracks</div>', unsafe_allow_html=True)
+    for i, (_, row) in enumerate(df.head(count).iterrows()):
+        render_song_row(i, row, show_vibe=True, id_prefix=id_prefix)
+    if count < len(df) and count < max_val:
+        render_more_button(count_key, max_val=max_val)
+
+
+# ─────────────────────────────────────────────
+# TABS
+# ─────────────────────────────────────────────
+tab_home, tab_analytics, tab_explore, tab_genres, tab_recs, tab_profile = st.tabs([
+    "Home", "Analytics", "Explore", "Genres", "For You", "Profile",
+])
+
+
+# ══════════════════════════════════════════════
+# HOME
+# ══════════════════════════════════════════════
+with tab_home:
+    _row_counter[0] = 0
+
+    st.markdown('<div class="section-label">Global Trends</div>', unsafe_allow_html=True)
+    st.markdown('<div style="font-family:Syne,sans-serif;font-size:1.65rem;font-weight:700;color:#d8d8f0;margin-bottom:1.5rem;letter-spacing:-0.02em">What\'s Hot Right Now</div>', unsafe_allow_html=True)
+
+    total_plays    = int(history["playcount"].sum())
+    unique_songs   = song_data["track_id"].nunique()
+    unique_artists = song_data["artist"].nunique()
+    gs             = song_data["genre"].replace("", np.nan).dropna()
+    top_genre_val  = gs.value_counts().index[0] if not gs.empty else "—"
+
+    c1,c2,c3,c4 = st.columns(4)
+    for col,val,label in [(c1,f"{total_plays/1_000_000:.1f}M","Total Plays"),(c2,f"{unique_songs:,}","Songs"),(c3,f"{unique_artists:,}","Artists"),(c4,top_genre_val[:12],"Top Genre")]:
+        with col:
+            st.markdown(f'<div class="stat-card"><div class="stat-val">{val}</div><div class="stat-label">{label}</div></div>', unsafe_allow_html=True)
+
+    st.markdown('<div style="height:1.6rem"></div>', unsafe_allow_html=True)
+    col_top, col_right = st.columns([1.3, 1])
+
+    with col_top:
+        st.markdown('<div class="section-label">Charts</div><div style="font-family:Syne,sans-serif;font-size:1rem;font-weight:700;color:#c8c8e8;margin-bottom:1rem">Top 10 Most Played</div>', unsafe_allow_html=True)
+        for i,(_, row) in enumerate(top10_global.iterrows()):
+            render_song_row(i, row, show_vibe=True, id_prefix="home")
+
+    with col_right:
+        st.markdown('<div class="section-label">Sound Vibes</div><div style="font-family:Syne,sans-serif;font-size:1rem;font-weight:700;color:#c8c8e8;margin-bottom:0.6rem">Click to Explore</div>', unsafe_allow_html=True)
+        vibe_counts = song_data["vibe"].value_counts()
+        for vibe, cnt in vibe_counts.items():
+            c = get_vibe_color(str(vibe))
+            if st.button(f"{vibe}  ·  {cnt:,}", key=f"vibe_btn_{vibe}"):
+                st.session_state.explore_source = "vibe"
+                st.session_state.explore_vibe   = vibe
+                st.rerun()
+            # Style the last button as vibe card via CSS override per button
+            st.markdown(f"""<style>
+            button[kind="secondary"][data-testid="baseButton-secondary"]:has(div:contains("{vibe}")) {{
+              background: {c}12 !important; border: 1px solid {c}30 !important;
+              border-radius: 11px !important; color: {c} !important; text-align: left !important;
+            }}
+            </style>""", unsafe_allow_html=True)
+
+
+# ══════════════════════════════════════════════
+# ANALYTICS
+# ══════════════════════════════════════════════
+with tab_analytics:
+    _row_counter[0] = 0
+
+    st.markdown('<div class="section-label">Insights</div>', unsafe_allow_html=True)
+    st.markdown('<div style="font-family:Syne,sans-serif;font-size:1.65rem;font-weight:700;color:#d8d8f0;margin-bottom:1.5rem;letter-spacing:-0.02em">Global Analytics</div>', unsafe_allow_html=True)
+
+    # Row 1: Genre bubble chart + Artist leaderboard
+    col_a, col_b = st.columns(2)
+
+    with col_a:
+        st.markdown('<div style="font-family:Syne,sans-serif;font-size:0.95rem;font-weight:700;color:#c8c8e8;margin-bottom:1rem">Genre Universe</div>', unsafe_allow_html=True)
+        genre_pop  = song_data[song_data["genre"] != ""].groupby("genre")["playcount"].sum().sort_values(ascending=False).head(12)
+        bcolors    = ["#7c5cfc","#f04060","#40a0f0","#60c060","#f0a020","#f06090","#40c0b0","#8040a0","#a060f0","#c06030","#5a3dcc","#3d25a0"]
+        tm_html = treemap_html(genre_pop.index.tolist(), genre_pop.values.tolist(), bcolors[:len(genre_pop)])
+        st.markdown(tm_html, unsafe_allow_html=True)
+
+    with col_b:
+        st.markdown('<div style="font-family:Syne,sans-serif;font-size:0.95rem;font-weight:700;color:#c8c8e8;margin-bottom:1rem">Artist Leaderboard</div>', unsafe_allow_html=True)
+        artist_reach = song_data.groupby("artist").agg(Songs=("track_id","nunique"), Plays=("playcount","sum")).reset_index().sort_values("Plays", ascending=False).head(10)
+        max_ap = artist_reach["Plays"].max() + 1
+        for rank, (_, row) in enumerate(artist_reach.iterrows(), 1):
+            bar  = int(row["Plays"] / max_ap * 100)
+            medal = TIER_MEDALS.get(rank, "#2a1880")
+            rank_style = f"color:{medal};font-size:{'1.3rem' if rank <= 3 else '0.9rem'}"
+            st.markdown(f"""
+            <div class="tier-row">
+              <span class="tier-rank" style="{rank_style}">{"🥇" if rank==1 else "🥈" if rank==2 else "🥉" if rank==3 else rank}</span>
+              <div class="tier-info">
+                <div class="tier-name">{row['artist']}</div>
+                <div class="tier-sub">{int(row['Songs'])} songs</div>
+                <div style="height:3px;background:#0e0e1e;border-radius:2px;margin-top:5px">
+                  <div style="width:{bar}%;height:3px;background:{medal};border-radius:2px;opacity:0.7"></div>
+                </div>
+              </div>
+              <span class="tier-plays">{int(row['Plays']):,}</span>
+            </div>""", unsafe_allow_html=True)
+
+    st.markdown('<hr class="wl-divider">', unsafe_allow_html=True)
+
+    # Row 2: Vibe donut + Audio radar
+    col_c, col_d = st.columns(2)
+
+    with col_c:
+        st.markdown('<div style="font-family:Syne,sans-serif;font-size:0.95rem;font-weight:700;color:#c8c8e8;margin-bottom:1rem">Vibe Distribution</div>', unsafe_allow_html=True)
+        vibe_dist  = song_data["vibe"].value_counts()
+        total_v    = vibe_dist.sum()
+        d_labels   = vibe_dist.index.tolist()
+        d_sizes    = [int(v/total_v*100) for v in vibe_dist.values]
+        d_colors   = [get_vibe_color(v) for v in d_labels]
+        fig_d = donut_chart(d_labels, d_sizes, d_colors, "Song Vibe Breakdown")
+        st.pyplot(fig_d, transparent=True); plt.close()
+
+    with col_d:
+        st.markdown('<div style="font-family:Syne,sans-serif;font-size:0.95rem;font-weight:700;color:#c8c8e8;margin-bottom:1rem">Global Audio Fingerprint</div>', unsafe_allow_html=True)
+        radar_feats  = ["danceability","energy","valence","acousticness","liveness","speechiness"]
+        radar_labels = ["Dance","Energy","Mood","Acoustic","Live","Speech"]
+        global_avgs  = song_data[radar_feats].mean().values.tolist()
+        fig_r = radar_chart(global_avgs, radar_labels, "Average Audio Profile", color="#7c5cfc")
+        st.pyplot(fig_r, transparent=True); plt.close()
+
+
+# ══════════════════════════════════════════════
+# EXPLORE
+# ══════════════════════════════════════════════
+with tab_explore:
+    _row_counter[0] = 0
+
+    st.markdown('<div class="section-label">Explore</div>', unsafe_allow_html=True)
+    st.markdown('<div style="font-family:Syne,sans-serif;font-size:1.65rem;font-weight:700;color:#d8d8f0;margin-bottom:0.4rem;letter-spacing:-0.02em">Discover Music</div>', unsafe_allow_html=True)
+
+    # AI Search bar
+    st.markdown('<div class="ai-search-wrap"><div class="ai-search-label">AI Playlist Generator — describe any mood, activity, or vibe</div>', unsafe_allow_html=True)
+    ai_col1, ai_col2 = st.columns([5, 1])
+    with ai_col1:
+        ai_query = st.text_input("ai_search", placeholder='e.g. "sad rainy afternoon", "pump up gym session", "cozy sunday morning"…', label_visibility="collapsed", key="ai_search_input")
+    with ai_col2:
+        ai_go = st.button("Generate", key="ai_go_btn")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    if ai_go and ai_query and ai_query.strip():
+        st.session_state.explore_ai_query  = ai_query
+        st.session_state.explore_source    = "ai"
+        st.session_state.explore_ai_count  = 10
+        with st.spinner("AI is building your playlist…"):
+            res, title, mood = ai_playlist_from_query(ai_query, uid, history, song_data, audio_scaled, text_matrix)
+        st.session_state.explore_ai_result = res
+        st.session_state.explore_ai_title  = title
+        st.session_state.explore_ai_mood   = mood
+        st.rerun()
+
+    st.markdown('<hr class="wl-divider">', unsafe_allow_html=True)
+
+    # Season/Mood cards — clickable, no dropdown
+    st.markdown('<div style="font-family:Syne,sans-serif;font-size:0.9rem;font-weight:700;color:#c8c8e8;margin-bottom:0.8rem">Seasons & Moods</div>', unsafe_allow_html=True)
+
+    SEASON_TAGS = {
+        "Winter":    ["winter","cold","snow","cozy","fireplace","december","frost","ice"],
+        "Spring":    ["spring","bloom","fresh","flowers","garden","rain","blossom","nature"],
+        "Summer":    ["summer","beach","sun","surf","hot","vacation","tropical","pool"],
+        "Autumn":    ["autumn","fall","harvest","leaves","october","maple","amber","crisp"],
+        "Christmas": ["christmas","xmas","santa","carol","jingle","bells","sleigh","gifts"],
+        "Halloween": ["halloween","spooky","horror","scary","creepy","ghost","witch","dark"],
+        "New Year":  ["new year","nye","celebration","fireworks","party","countdown","midnight"],
+        "Valentine": ["love","romance","valentine","heart","romantic","couples","crush","passion"],
+        "Workout":   ["workout","gym","run","energy","pump","training","fitness","power","intense"],
+        "Study":     ["study","focus","concentrate","calm","ambient","instrumental","piano","soft"],
+        "Party":     ["party","dance","club","dj","bass","banger","anthem","hype","festival"],
+        "Sad":       ["sad","cry","heartbreak","tears","grief","sorrow","lonely","miss","broken"],
+        "Road Trip": ["road","trip","drive","highway","journey","travel","adventure","cruise"],
+        "Sleep":     ["sleep","lullaby","calm","peaceful","night","dream","rest","relax","soothe"],
+    }
+    SEASON_COLORS = {
+        "Winter":"#40a0f0","Spring":"#60c060","Summer":"#f0a020","Autumn":"#c06030",
+        "Christmas":"#f04060","Halloween":"#f08020","New Year":"#a060f0","Valentine":"#f06090",
+        "Workout":"#f04060","Study":"#40c0b0","Party":"#f0a020","Sad":"#a060f0",
+        "Road Trip":"#60c060","Sleep":"#40a0f0",
+    }
+
+    # Season color CSS overrides — make each button its season color
+    season_css = ""
+    for s, c in SEASON_COLORS.items():
+        season_css += f""".stButton button[aria-label="{s}"] {{ background: {c}18 !important; border: 1px solid {c}44 !important; color: {c} !important; }}""".strip() + " "
+    st.markdown(f"<style>{season_css}</style>", unsafe_allow_html=True)
+
+    # Render as clickable buttons in a grid
+    season_names = list(SEASON_TAGS.keys())
+    rows_of_4    = [season_names[i:i+4] for i in range(0, len(season_names), 4)]
+    for row_items in rows_of_4:
+        cols = st.columns(len(row_items))
+        for col, s in zip(cols, row_items):
+            c = SEASON_COLORS.get(s,"#7c5cfc")
+            with col:
+                if st.button(s, key=f"season_btn_{s}", use_container_width=True):
+                    if s not in st.session_state.explore_season_data:
+                        pattern = "|".join(SEASON_TAGS.get(s,[]))
+                        res = song_data[song_data["tags"].str.lower().str.contains(pattern, na=False, regex=True)].copy()
+                        if res.empty:
+                            res = song_data[song_data["name"].str.lower().str.contains(pattern[:20], na=False, regex=True)].copy()
+                        res = res.sort_values("popularity_score", ascending=False).drop_duplicates("track_id").head(50)
+                        st.session_state.explore_season_data[s] = res
+                        st.session_state.explore_season_count[s] = 10
+                    st.session_state.explore_source  = "season"
+                    st.session_state.explore_season  = s
+                    st.session_state.explore_ai_query = ""
+                    st.rerun()
+
+    # Hidden Gems card
+    st.markdown('<div style="height:0.5rem"></div>', unsafe_allow_html=True)
+    col_hg, _ = st.columns([1, 3])
+    with col_hg:
+        if st.button("Hidden Gems — Undiscovered Quality", key="hidden_gems_btn", use_container_width=True):
+            song_data["audio_quality"] = song_data["energy"]*0.3 + song_data["danceability"]*0.3 + song_data["valence"]*0.4
+            hg = song_data[song_data["popularity_score"] < 0.2].sort_values("audio_quality", ascending=False).drop_duplicates("track_id").head(50)
+            st.session_state.explore_season_data["Hidden Gems"] = hg
+            st.session_state.explore_season_count["Hidden Gems"] = 10
+            st.session_state.explore_source  = "season"
+            st.session_state.explore_season  = "Hidden Gems"
+            st.session_state.explore_ai_query = ""
+            st.rerun()
+
+    st.markdown('<hr class="wl-divider">', unsafe_allow_html=True)
+
+    # ── Render active playlist ──
+    src = st.session_state.explore_source
+
+    if src == "ai" and st.session_state.explore_ai_result is not None:
+        title = st.session_state.explore_ai_title
+        mood  = st.session_state.explore_ai_mood
+        st.markdown(
+            f'<div style="font-family:Syne,sans-serif;font-size:1.1rem;font-weight:700;color:#d0d0f0;margin-bottom:3px">{title}</div>'
+            f'<div style="font-size:0.82rem;color:#3a3a60;margin-bottom:1rem">{mood}</div>',
+            unsafe_allow_html=True
+        )
+        render_playlist(st.session_state.explore_ai_result, st.session_state.explore_ai_count,
+                        "explore_ai_count", "ai_pl")
+
+    elif src == "vibe" and st.session_state.explore_vibe:
+        vibe = st.session_state.explore_vibe
+        c    = get_vibe_color(vibe)
+        vibe_songs = song_data[song_data["vibe"] == vibe].sort_values("popularity_score", ascending=False).head(50)
+        st.markdown(f'<div style="font-family:Syne,sans-serif;font-size:1.1rem;font-weight:700;color:{c};margin-bottom:1rem">{vibe} — {len(vibe_songs)} songs</div>', unsafe_allow_html=True)
+        count_key = f"vibe_count_{vibe}"
+        if count_key not in st.session_state: st.session_state[count_key] = 10
+        render_playlist(vibe_songs, st.session_state[count_key], count_key, f"vibe_{vibe}")
+
+    elif src == "season" and st.session_state.explore_season:
+        s    = st.session_state.explore_season
+        c    = SEASON_COLORS.get(s,"#7c5cfc")
+        data = st.session_state.explore_season_data.get(s, pd.DataFrame())
+        cnt  = st.session_state.explore_season_count.get(s, 10)
+        st.markdown(f'<div style="font-family:Syne,sans-serif;font-size:1.1rem;font-weight:700;color:{c};margin-bottom:1rem">{s} Playlist — {len(data)} songs</div>', unsafe_allow_html=True)
+        render_playlist(data, cnt, f"explore_season_cnt_{s}", f"season_{s}")
+        if cnt < len(data):
+            st.markdown('<div class="more-btn-wrap">', unsafe_allow_html=True)
+            if st.button("+ Show more", key=f"more_season_{s}"):
+                st.session_state.explore_season_count[s] = min(cnt + 5, len(data))
+                st.rerun()
+            st.markdown('</div>', unsafe_allow_html=True)
+
+    else:
+        st.markdown('<div style="color:#28285a;font-size:0.85rem">Search above or pick a playlist card to get started.</div>', unsafe_allow_html=True)
+
+
+# ══════════════════════════════════════════════
+# GENRES
+# ══════════════════════════════════════════════
+with tab_genres:
+    _row_counter[0] = 0
+
+    st.markdown('<div class="section-label">Browse</div>', unsafe_allow_html=True)
+    st.markdown('<div style="font-family:Syne,sans-serif;font-size:1.65rem;font-weight:700;color:#d8d8f0;margin-bottom:1rem;letter-spacing:-0.02em">Browse by Genre</div>', unsafe_allow_html=True)
+    st.markdown('<div style="font-size:0.82rem;color:#28285a;margin-bottom:1rem">Select one or more genres — songs must match all selected.</div>', unsafe_allow_html=True)
+
+    # Clickable multi-select pills
+    pills_html = ""
+    for g in all_genres_list:
+        active = "active" if g in st.session_state.selected_genres else ""
+        pills_html += f'<span class="genre-pill {active}" onclick="void(0)">{g}</span>'
+
+    # Render pills as buttons in a flex wrap
+    pill_cols = st.columns(8)
+    for i, g in enumerate(all_genres_list):
+        with pill_cols[i % 8]:
+            is_active = g in st.session_state.selected_genres
+            label     = f"✓ {g}" if is_active else g
+            if st.button(label, key=f"gpill_{g}", use_container_width=True):
+                if g in st.session_state.selected_genres:
+                    st.session_state.selected_genres.remove(g)
+                else:
+                    st.session_state.selected_genres.append(g)
+                st.session_state.genre_multi_result = None
+                st.session_state.genre_multi_count  = 10
+                st.rerun()
+
+    # Tag search
+    st.markdown('<div style="height:0.6rem"></div>', unsafe_allow_html=True)
+    tag_search = st.text_input("tag_search", placeholder="Or search by tag (e.g. indie, 80s, dreamy)…", label_visibility="collapsed")
+
+    st.markdown('<hr class="wl-divider">', unsafe_allow_html=True)
+
+    if tag_search and tag_search.strip():
+        tag = tag_search.strip().lower()
+        tr  = song_data[song_data["tags"].str.lower().str.contains(rf"\b{tag}\b", na=False, regex=True)].sort_values(["popularity_score","playcount"], ascending=False).head(50)
+        if tr.empty:
+            tr = song_data[song_data["tags"].str.lower().str.contains(tag, na=False)].sort_values(["popularity_score","playcount"], ascending=False).head(50)
+        st.markdown(f'<div style="font-family:Syne,sans-serif;font-size:0.95rem;font-weight:700;color:#c8c8e8;margin-bottom:1rem">Tag: <span style="color:#7c5cfc">"{tag_search}"</span></div>', unsafe_allow_html=True)
+        render_playlist(tr if not tr.empty else None, 10, "tag_count", "tag")
+
+    elif st.session_state.selected_genres:
+        sg = st.session_state.selected_genres
+        if st.session_state.genre_multi_result is None:
+            st.session_state.genre_multi_result = recommend_by_genre_multi(sg, song_data, limit=50)
+
+        result = st.session_state.genre_multi_result
+        count  = st.session_state.genre_multi_count
+        pills_active = " + ".join([f'<span style="color:#7c5cfc">{g}</span>' for g in sg])
+        st.markdown(f'<div style="font-family:Syne,sans-serif;font-size:0.95rem;font-weight:700;color:#c8c8e8;margin-bottom:1rem">{pills_active}</div>', unsafe_allow_html=True)
+
+        if result is None or result.empty:
+            st.markdown(f'<div style="color:#28285a;font-size:0.85rem">No songs found matching all selected genres. Try fewer genres.</div>', unsafe_allow_html=True)
+        else:
+            render_playlist(result, count, "genre_multi_count", "gmulti")
+    else:
+        st.markdown('<div style="color:#28285a;font-size:0.85rem;margin-top:0.5rem">Select genres above or search by tag.</div>', unsafe_allow_html=True)
+
+
+# ══════════════════════════════════════════════
+# FOR YOU
+# ══════════════════════════════════════════════
+with tab_recs:
+    _row_counter[0] = 0
+
+    st.markdown('<div class="section-label">Recommendations</div>', unsafe_allow_html=True)
+    st.markdown('<div style="font-family:Syne,sans-serif;font-size:1.65rem;font-weight:700;color:#d8d8f0;margin-bottom:1.2rem;letter-spacing:-0.02em">For You</div>', unsafe_allow_html=True)
+
+    st.markdown('<div class="inner-tabs">', unsafe_allow_html=True)
+    inner_tab_taste, inner_tab_genre, inner_tab_song = st.tabs([
+        "Based on your taste", "By genre", "Similar to a song"
+    ])
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    with inner_tab_taste:
+        _row_counter[0] = 0
+        if st.session_state.taste_result is None:
+            with st.spinner(""):
+                st.session_state.taste_result = recommend_by_user(uid, history, song_data, audio_scaled, text_matrix, limit=50)
+        render_playlist(st.session_state.taste_result, st.session_state.taste_count, "taste_count", "taste")
+
+    with inner_tab_genre:
+        _row_counter[0] = 0
+        genre_input = st.text_input("genre_search", placeholder="Enter a genre, e.g. pop, jazz, metal…", label_visibility="collapsed", key="genre_input_field")
+        if genre_input and genre_input.strip():
+            if genre_input != st.session_state.genre_input:
+                st.session_state.genre_input  = genre_input
+                st.session_state.genre_result = recommend_by_genre_multi([genre_input], song_data, limit=50)
+                st.session_state.genre_count  = 10
+            render_playlist(st.session_state.genre_result, st.session_state.genre_count, "genre_count", "grecs")
+        else:
+            st.markdown('<div style="color:#28285a;font-size:0.85rem;margin-top:0.8rem">Type a genre to discover songs.</div>', unsafe_allow_html=True)
+
+    with inner_tab_song:
+        _row_counter[0] = 0
+        song_input = st.text_input("song_search", placeholder="Song name, e.g. Creep, Bohemian Rhapsody…", label_visibility="collapsed", key="song_input_field")
+        if song_input and song_input.strip():
+            if song_input != st.session_state.song_input:
+                st.session_state.song_input  = song_input
+                st.session_state.song_result = hybrid_recommend(song_input, song_data, audio_scaled, text_matrix, limit=50)
+                st.session_state.song_count  = 10
+            matched = song_data[song_data["name"].str.lower().str.contains(song_input.lower(), na=False)]
+            if not matched.empty:
+                m  = matched.iloc[0]; vc = get_vibe_color(str(m.get("vibe","")))
+                st.markdown(f'<div style="background:#0a0a18;border:1px solid #1a1a30;border-radius:12px;padding:0.9rem 1.2rem;margin-bottom:1.2rem;display:flex;align-items:center;gap:12px"><div style="flex:1"><div style="font-size:0.7rem;color:#28205a;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px">Because you searched</div><div style="font-size:0.95rem;font-weight:700;color:#d0d0e8">{m["name"]}</div><div style="font-size:0.75rem;color:#282840">{m["artist"]}</div></div><span style="background:{vc}22;border:1px solid {vc}44;color:{vc};border-radius:6px;padding:3px 10px;font-size:0.7rem;font-weight:600">{m.get("vibe","")}</span></div>', unsafe_allow_html=True)
+            render_playlist(st.session_state.song_result, st.session_state.song_count, "song_count", "srecs")
+        else:
+            st.markdown('<div style="color:#28285a;font-size:0.85rem;margin-top:0.8rem">Enter a song name to find similar tracks.</div>', unsafe_allow_html=True)
+
+
+# ══════════════════════════════════════════════
+# PROFILE
+# ══════════════════════════════════════════════
+with tab_profile:
+    _row_counter[0] = 0
+
+    col_av, col_info = st.columns([1, 3])
+    with col_av:
+        st.markdown(
+            f'<div class="profile-avatar">{initials}</div>'
+            f'<div style="font-family:monospace;font-size:0.9rem;font-weight:700;color:#4a4a70">···{st.session_state.username[-3:]}</div>'
+            f'<div style="font-size:0.72rem;color:#181830;margin-top:4px">Listener</div>',
+            unsafe_allow_html=True
+        )
+        st.markdown('<div style="height:0.8rem"></div>', unsafe_allow_html=True)
+        if st.button("Sign out"):
+            for k, v in defaults.items(): st.session_state[k] = v
+            st.rerun()
+
+    with col_info:
+        umc = user_music.copy()
+        umc["genre_clean"] = umc.apply(
+            lambda r: str(r.get("tags","")).split(",")[0].strip()
+            if (pd.isna(r.get("genre","")) or str(r.get("genre","")).strip() == "")
+            else r.get("genre","Unknown"), axis=1
+        )
+        total_plays_u  = int(user_history["playcount"].sum())
+        unique_songs_u = user_history["track_id"].nunique()
+        fav_genre      = umc["genre_clean"].value_counts().index[0] if not umc.empty else "—"
+        c1,c2,c3 = st.columns(3)
+        for col,val,label in [(c1,f"{total_plays_u:,}","Total Plays"),(c2,f"{unique_songs_u:,}","Songs Played"),(c3,fav_genre[:10],"Fav Genre")]:
+            with col:
+                st.markdown(f'<div class="stat-card"><div class="stat-val">{val}</div><div class="stat-label">{label}</div></div>', unsafe_allow_html=True)
+
+    st.markdown('<hr class="wl-divider">', unsafe_allow_html=True)
+    col_radar, col_vibes = st.columns(2)
+
+    with col_radar:
+        st.markdown('<div style="font-family:Syne,sans-serif;font-size:0.95rem;font-weight:700;color:#c8c8e8;margin-bottom:1rem">Your Sound DNA</div>', unsafe_allow_html=True)
+        rf = ["danceability","energy","valence","acousticness","liveness","speechiness"]
+        rl = ["Dance","Energy","Mood","Acoustic","Live","Speech"]
+        ufd = user_song_data[rf].dropna()
+        if not ufd.empty:
+            fig_r = radar_chart(ufd.mean().values.tolist(), rl, "Audio Taste Profile", color="#7c5cfc")
+            st.pyplot(fig_r, transparent=True); plt.close()
+
+    with col_vibes:
+        st.markdown('<div style="font-family:Syne,sans-serif;font-size:0.95rem;font-weight:700;color:#c8c8e8;margin-bottom:1rem">Your Vibe Mix</div>', unsafe_allow_html=True)
+        uvd = user_song_data.dropna(subset=["vibe"])
+        if not uvd.empty:
+            vc2 = uvd["vibe"].value_counts()
+            cards = ""
+            for vibe, cnt in vc2.items():
+                c = get_vibe_color(str(vibe))
+                cards += f'<div class="vibe-card" style="background:{c}12;border-color:{c}30"><div class="vibe-card-name" style="font-family:Syne,sans-serif;font-size:0.82rem;font-weight:700;color:{c}">{vibe}</div><div class="vibe-card-count-sm" style="color:{c}">{cnt:,} songs</div></div>'
+            st.markdown(f'<div class="vibe-grid">{cards}</div>', unsafe_allow_html=True)
+
+    st.markdown('<hr class="wl-divider">', unsafe_allow_html=True)
+    col_hist, col_art = st.columns(2)
+
+    with col_hist:
+        st.markdown('<div style="font-family:Syne,sans-serif;font-size:0.95rem;font-weight:700;color:#c8c8e8;margin-bottom:1rem">Listening History</div>', unsafe_allow_html=True)
+        tus = user_music.sort_values("playcount", ascending=False).drop_duplicates(subset=["track_id"]).head(8)
+        tus = tus.merge(song_data[["track_id","vibe"]], on="track_id", how="left")
+        for i,(_, row) in enumerate(tus.iterrows()):
+            render_song_row(i, row, show_vibe=True, id_prefix="prof_hist")
+
+    with col_art:
+        st.markdown('<div style="font-family:Syne,sans-serif;font-size:0.95rem;font-weight:700;color:#c8c8e8;margin-bottom:1rem">Top Artists</div>', unsafe_allow_html=True)
+        ta  = user_music.groupby("artist").agg(Songs=("track_id","nunique"),Plays=("playcount","sum")).reset_index().sort_values(["Plays","Songs"],ascending=False).head(8)
+        mp2 = ta["Plays"].max() + 1
+        for i,(_, row) in enumerate(ta.iterrows()):
+            bar = min(100, int(row["Plays"]/mp2*100))
+            st.markdown(f'<div class="song-row"><span class="song-num">{i+1}</span><div class="song-info"><div class="song-name no-preview">{row["artist"]}</div><div class="song-artist">{int(row["Songs"])} songs · {int(row["Plays"]):,} plays</div><div class="score-bar-bg"><div class="score-bar-fill" style="width:{bar}%"></div></div></div></div>', unsafe_allow_html=True)

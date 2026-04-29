@@ -334,9 +334,56 @@ def get_genre(row):
 
 def ai_playlist_from_query(query, user_id, history, song_data, audio_scaled, text_matrix):
     """
-    Semantic keyword expansion: maps natural language → music tags,
-    then personalizes using user listening history audio profile.
+    1. Calls Claude API to interpret natural language → tags (if API key set)
+    2. Falls back to local semantic expansion map if no key or API fails
+    3. Personalizes results using user listening history audio profile
     """
+    import urllib.request
+
+    ANTHROPIC_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
+
+    # ── Step 1: Try Claude API ──
+    claude_tags = []
+    if ANTHROPIC_KEY:
+        try:
+            uh         = history[history["user_id"] == user_id]
+            user_songs = uh.merge(song_data[["track_id","genre","tags","vibe"]], on="track_id", how="left")
+            top_genres = user_songs["genre"].replace("", np.nan).dropna().value_counts().head(3).index.tolist()
+            top_vibes  = user_songs["vibe"].dropna().value_counts().head(2).index.tolist()
+            taste_ctx  = f"User likes: {', '.join(top_genres)} genres. Preferred vibes: {', '.join(top_vibes)}."
+
+            prompt = f"""You are a music tag AI. A user searched: "{query}"
+
+{taste_ctx}
+
+Return ONLY a JSON object like this (no markdown, no explanation):
+{{"tags": ["tag1","tag2","tag3","tag4","tag5","tag6","tag7","tag8"], "title": "Playlist Name", "mood": "One sentence vibe description"}}
+
+Use simple lowercase music tags from: sad, happy, angry, calm, romantic, energetic, chill, dark, acoustic, electronic, dance, party, study, sleep, workout, love, heartbreak, jazz, rock, pop, folk, soul, melancholy, nostalgic, upbeat, dreamy, aggressive, peaceful, summer, winter, rain, night, morning, cozy, groovy, intense, soft, instrumental, lo-fi, indie, classical, country, hip hop, blues, funk, gospel, ambient, alternative"""
+
+            req  = urllib.request.Request(
+                "https://api.anthropic.com/v1/messages",
+                data=json.dumps({
+                    "model": "claude-haiku-4-5-20251001",
+                    "max_tokens": 200,
+                    "messages": [{"role": "user", "content": prompt}]
+                }).encode(),
+                headers={
+                    "Content-Type": "application/json",
+                    "x-api-key": ANTHROPIC_KEY,
+                    "anthropic-version": "2023-06-01"
+                },
+                method="POST"
+            )
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                data       = json.loads(resp.read())
+                raw        = data["content"][0]["text"].strip()
+                parsed     = json.loads(raw)
+                claude_tags = parsed.get("tags", [])
+                cl_title    = parsed.get("title", query.title())
+                cl_mood     = parsed.get("mood", "")
+        except Exception:
+            claude_tags = []
     # ── Semantic expansion map ──
     # Keys are concepts the user might type; values are actual music tags to search
     SEMANTIC_MAP = {
@@ -400,36 +447,32 @@ def ai_playlist_from_query(query, user_id, history, song_data, audio_scaled, tex
     }
 
     q_lower = query.lower().strip()
+    words   = q_lower.split()
 
-    # Collect tags: first try compound phrases, then individual words
-    expanded_tags = set()
-
-    # Try full query
-    if q_lower in SEMANTIC_MAP:
-        expanded_tags.update(SEMANTIC_MAP[q_lower])
-
-    # Try 2-word combos
-    words = q_lower.split()
-    for i in range(len(words)-1):
-        combo = f"{words[i]} {words[i+1]}"
-        if combo in SEMANTIC_MAP:
-            expanded_tags.update(SEMANTIC_MAP[combo])
-
-    # Try individual words
-    for w in words:
-        if w in SEMANTIC_MAP:
-            expanded_tags.update(SEMANTIC_MAP[w])
-        else:
-            # Direct partial match — word itself as a tag
-            expanded_tags.add(w)
-
-    # If still empty, use words directly
-    if not expanded_tags:
-        expanded_tags = set(words)
-
-    tags  = list(expanded_tags)
-    title = query.title()
-    mood  = f"Songs for: {query}"
+    # ── Step 2: Use Claude tags if available, else semantic map ──
+    if claude_tags:
+        tags  = claude_tags
+        title = cl_title
+        mood  = cl_mood
+    else:
+        # Local semantic expansion
+        expanded_tags = set()
+        if q_lower in SEMANTIC_MAP:
+            expanded_tags.update(SEMANTIC_MAP[q_lower])
+        for i in range(len(words)-1):
+            combo = f"{words[i]} {words[i+1]}"
+            if combo in SEMANTIC_MAP:
+                expanded_tags.update(SEMANTIC_MAP[combo])
+        for w in words:
+            if w in SEMANTIC_MAP:
+                expanded_tags.update(SEMANTIC_MAP[w])
+            else:
+                expanded_tags.add(w)
+        if not expanded_tags:
+            expanded_tags = set(words)
+        tags  = list(expanded_tags)
+        title = query.title()
+        mood  = f"Songs matching: {query}"
 
     # Score songs by tag matches (partial string match, more flexible)
     def tag_score(row):
